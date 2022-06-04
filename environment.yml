@@ -1,0 +1,5 @@
+name: sklearn-firstordersubset
+dependencies:
+  - numpy
+  - scipy
+  - scikit-learn
