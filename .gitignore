@@ -13,7 +13,6 @@ doc/modules/generated/
 doc/datasets/generated/
 
 # Distribution / packaging
-
 .Python
 env/
 build/
@@ -65,3 +64,6 @@ doc/generated/
 
 # PyBuilder
 target/
+
+# PyCharm
+.idea/*
