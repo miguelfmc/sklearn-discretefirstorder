@@ -5,7 +5,7 @@
 .. |ReadTheDocs| image:: https://readthedocs.org/projects/sklearn-firstordersubset/badge/?version=latest
 .. _ReadTheDocs: https://sklearn-firstordersubset.readthedocs.io/en/latest/?badge=latest
 
-project-template - A template for scikit-learn contributions
+sklearn-firstordersubset - First Order Method for Subset Selection
 ============================================================
 
 .. _scikit-learn: https://scikit-learn.org
