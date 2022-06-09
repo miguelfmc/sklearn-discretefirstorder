@@ -1,16 +1,21 @@
 """
 Discrete First-Order Method for Classification and Regression
 """
+
 from abc import ABCMeta, abstractmethod
 import numpy as np
+
 from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.utils.multiclass import unique_labels
+
+from ._dfo_optim import _plain_dfo
 
 
 class BaseDFO(BaseEstimator, metaclass=ABCMeta):
     """ Base class for Discrete First Order classification and regression.
     """
+
     def __init__(self, demo_param='demo_param'):
         self.demo_param = demo_param
 
@@ -47,6 +52,7 @@ class DFOClassifier(ClassifierMixin, BaseDFO):
     >>> estimator.fit(X, y)
     DFOClassifier()
     """
+
     def __init__(self, demo_param='demo'):
         self.demo_param = demo_param
 
@@ -127,10 +133,23 @@ class DFORegressor(RegressorMixin, BaseDFO):
     DFORegressor()
     """
 
-    def __init__(self, demo_param='demo'):
-        self.demo_param = demo_param
+    def __init__(self,
+                 loss="mse",
+                 learning_rate="auto",
+                 k=5,
+                 polish=True,
+                 n_runs=50,
+                 max_iter=100,
+                 tol=1e-3):
+        super(DFORegressor, self).__init__(loss=loss,
+                                           learning_rate=learning_rate,
+                                           k=k,
+                                           polish=polish,
+                                           n_runs=n_runs,
+                                           max_iter=max_iter,
+                                           tol=tol)
 
-    def fit(self, X, y):
+    def fit(self, X, y, coef_init=None):
         """Implementation of the fit method for the discrete first-order regressor.
 
         Parameters
@@ -153,6 +172,35 @@ class DFORegressor(RegressorMixin, BaseDFO):
         self.y_ = y
 
         # TODO implement 'fit' for DFORegressor
+        # checks
+
+        # init coefficients
+        if coef_init is None:
+            if self.X_.shape[0] > self.X_shape[1]:
+                # TODO fit least squares
+            else:
+                # TODO get X.T @ y
+            # TODO threshold coefficient vector
+
+        # optimize
+        # TODO implement dfo algorithm
+        objective = ...
+        coef = ...
+        coef_temp = ...
+        # TODO can we parallelize n_runs?
+        for _ in range(self.n_runs):
+            coef_temp, objective_temp = _plain_dfo(coef=coef_temp,
+                                                   X=self.X_,
+                                                   y=self.y_,
+                                                   learning_rate=self.learning_rate,
+                                                   k=k,
+                                                   loss=self.loss,
+                                                   polish=self.polish,
+                                                   max_iter=self.max_iter,
+                                                   tol=self.tol)
+            # TODO check best objective and coefs
+
+        self.coef_ = coef
 
         return self
 
