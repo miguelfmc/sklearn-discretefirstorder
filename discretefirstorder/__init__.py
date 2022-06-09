@@ -1,8 +1,7 @@
-from ._discrete_first_order import TemplateEstimator
-from ._discrete_first_order import TemplateClassifier
-from ._discrete_first_order import TemplateTransformer
+from ._discrete_first_order import BaseDFO
+from ._discrete_first_order import DFOClassifier
+from ._discrete_first_order import DFORegressor
 
 from ._version import __version__
 
-__all__ = ['TemplateEstimator', 'TemplateClassifier', 'TemplateTransformer',
-           '__version__']
+__all__ = ['BaseDFO', 'DFOClassifier', 'DFORegressor', '__version__']
