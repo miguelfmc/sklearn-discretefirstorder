@@ -7,7 +7,7 @@ import os
 from setuptools import find_packages, setup
 
 # get __version__ from _version.py
-ver_file = os.path.join('sklfirstorder', '_version.py')
+ver_file = os.path.join('discretefirstorder', '_version.py')
 with open(ver_file) as f:
     exec(f.read())
 

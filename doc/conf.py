@@ -85,7 +85,7 @@ copyright = u'2016, Vighnesh Birodkar'
 # built documents.
 #
 # The short X.Y version.
-from sklfirstorder import __version__
+from discretefirstorder import __version__
 version = __version__
 # The full version, including alpha/beta/rc tags.
 release = __version__
@@ -309,10 +309,10 @@ intersphinx_mapping = {
 
 # sphinx-gallery configuration
 sphinx_gallery_conf = {
-    'doc_module': 'sklfirstorder',
+    'doc_module': 'discretefirstorder',
     'backreferences_dir': os.path.join('generated'),
     'reference_url': {
-        'sklfirstorder': None}
+        'discretefirstorder': None}
 }
 
 def setup(app):

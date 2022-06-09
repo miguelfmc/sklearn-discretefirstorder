@@ -21,7 +21,7 @@ class TemplateEstimator(BaseEstimator):
 
     Examples
     --------
-    >>> from sklfirstorder import TemplateEstimator
+    >>> from discretefirstorder import TemplateEstimator
     >>> import numpy as np
     >>> X = np.arange(100).reshape(100, 1)
     >>> y = np.zeros((100, ))

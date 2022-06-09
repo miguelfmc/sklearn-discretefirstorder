@@ -5,9 +5,9 @@ from sklearn.datasets import load_iris
 from numpy.testing import assert_array_equal
 from numpy.testing import assert_allclose
 
-from sklfirstorder import TemplateEstimator
-from sklfirstorder import TemplateTransformer
-from sklfirstorder import TemplateClassifier
+from discretefirstorder import TemplateEstimator
+from discretefirstorder import TemplateTransformer
+from discretefirstorder import TemplateClassifier
 
 
 @pytest.fixture

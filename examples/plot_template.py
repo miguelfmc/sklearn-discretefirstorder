@@ -3,11 +3,11 @@
 Plotting Template Estimator
 ===========================
 
-An example plot of :class:`sklfirstorder.template.TemplateEstimator`
+An example plot of :class:`discretefirstorder.template.TemplateEstimator`
 """
 import numpy as np
 from matplotlib import pyplot as plt
-from sklfirstorder import TemplateEstimator
+from discretefirstorder import TemplateEstimator
 
 X = np.arange(100).reshape(100, 1)
 y = np.zeros((100, ))
