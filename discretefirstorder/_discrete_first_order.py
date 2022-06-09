@@ -1,81 +1,27 @@
 """
-This is a module to be used as a reference for building other modules
+Discrete First-Order Method for Classification and Regression
 """
+from abc import ABCMeta, abstractmethod
 import numpy as np
-from sklearn.base import BaseEstimator, ClassifierMixin, TransformerMixin
+from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.utils.multiclass import unique_labels
-from sklearn.metrics import euclidean_distances
 
 
-class TemplateEstimator(BaseEstimator):
-    """ A template estimator to be used as a reference implementation.
-
-    For more information regarding how to build your own estimator, read more
-    in the :ref:`User Guide <user_guide>`.
-
-    Parameters
-    ----------
-    demo_param : str, default='demo_param'
-        A parameter used for demonstation of how to pass and store paramters.
-
-    Examples
-    --------
-    >>> from discretefirstorder import TemplateEstimator
-    >>> import numpy as np
-    >>> X = np.arange(100).reshape(100, 1)
-    >>> y = np.zeros((100, ))
-    >>> estimator = TemplateEstimator()
-    >>> estimator.fit(X, y)
-    TemplateEstimator()
+class BaseDFO(BaseEstimator, metaclass=ABCMeta):
+    """ Base class for Discrete First Order classification and regression.
     """
     def __init__(self, demo_param='demo_param'):
         self.demo_param = demo_param
 
+    @abstractmethod
     def fit(self, X, y):
-        """A reference implementation of a fitting function.
-
-        Parameters
-        ----------
-        X : {array-like, sparse matrix}, shape (n_samples, n_features)
-            The training input samples.
-        y : array-like, shape (n_samples,) or (n_samples, n_outputs)
-            The target values (class labels in classification, real numbers in
-            regression).
-
-        Returns
-        -------
-        self : object
-            Returns self.
+        """Fit model.
         """
-        X, y = check_X_y(X, y, accept_sparse=True)
-        self.is_fitted_ = True
-        # `fit` should always return `self`
-        return self
-
-    def predict(self, X):
-        """ A reference implementation of a predicting function.
-
-        Parameters
-        ----------
-        X : {array-like, sparse matrix}, shape (n_samples, n_features)
-            The training input samples.
-
-        Returns
-        -------
-        y : ndarray, shape (n_samples,)
-            Returns an array of ones.
-        """
-        X = check_array(X, accept_sparse=True)
-        check_is_fitted(self, 'is_fitted_')
-        return np.ones(X.shape[0], dtype=np.int64)
 
 
-class TemplateClassifier(ClassifierMixin, BaseEstimator):
-    """ An example classifier which implements a 1-NN algorithm.
-
-    For more information regarding how to build your own classifier, read more
-    in the :ref:`User Guide <user_guide>`.
+class DFOClassifier(ClassifierMixin, BaseDFO):
+    """ Discrete first-order classifier.
 
     Parameters
     ----------
@@ -90,6 +36,16 @@ class TemplateClassifier(ClassifierMixin, BaseEstimator):
         The labels passed during :meth:`fit`.
     classes_ : ndarray, shape (n_classes,)
         The classes seen at :meth:`fit`.
+
+    Examples
+    --------
+    >>> from discretefirstorder import DFOClassifier
+    >>> import numpy as np
+    >>> X = np.arange(100).reshape(100, 1)
+    >>> y = np.zeros((100, ))
+    >>> estimator = DFOClassifier()
+    >>> estimator.fit(X, y)
+    DFOClassifier()
     """
     def __init__(self, demo_param='demo'):
         self.demo_param = demo_param
@@ -110,12 +66,16 @@ class TemplateClassifier(ClassifierMixin, BaseEstimator):
             Returns self.
         """
         # Check that X and y have correct shape
+        # TODO call _validate_data instead
         X, y = check_X_y(X, y)
         # Store the classes seen during fit
         self.classes_ = unique_labels(y)
 
         self.X_ = X
         self.y_ = y
+
+        # TODO implement 'fit' method for DFOCLassifier
+
         # Return the classifier
         return self
 
@@ -130,8 +90,7 @@ class TemplateClassifier(ClassifierMixin, BaseEstimator):
         Returns
         -------
         y : ndarray, shape (n_samples,)
-            The label for each sample is the label of the closest sample
-            seen during fit.
+            The output corresponding to each input sample.
         """
         # Check is fit had been called
         check_is_fitted(self, ['X_', 'y_'])
@@ -139,15 +98,11 @@ class TemplateClassifier(ClassifierMixin, BaseEstimator):
         # Input validation
         X = check_array(X)
 
-        closest = np.argmin(euclidean_distances(X, self.X_), axis=1)
-        return self.y_[closest]
+        pass
 
 
-class TemplateTransformer(TransformerMixin, BaseEstimator):
-    """ An example transformer that returns the element-wise square root.
-
-    For more information regarding how to build your own transformer, read more
-    in the :ref:`User Guide <user_guide>`.
+class DFORegressor(RegressorMixin, BaseDFO):
+    """ Discrete first-order regressor.
 
     Parameters
     ----------
@@ -156,58 +111,68 @@ class TemplateTransformer(TransformerMixin, BaseEstimator):
 
     Attributes
     ----------
-    n_features_ : int
-        The number of features of the data passed to :meth:`fit`.
+    X_ : ndarray, shape (n_samples, n_features)
+        The input passed during :meth:`fit`.
+    y_ : ndarray, shape (n_samples,)
+        The labels passed during :meth:`fit`.
+
+    Examples
+    --------
+    >>> from discretefirstorder import DFORegressor
+    >>> import numpy as np
+    >>> X = np.arange(100).reshape(100, 1)
+    >>> y = np.random.normal(size=(100, ))
+    >>> estimator = DFORegressor()
+    >>> estimator.fit(X, y)
+    DFORegressor()
     """
+
     def __init__(self, demo_param='demo'):
         self.demo_param = demo_param
 
-    def fit(self, X, y=None):
-        """A reference implementation of a fitting function for a transformer.
+    def fit(self, X, y):
+        """Implementation of the fit method for the discrete first-order regressor.
 
         Parameters
         ----------
-        X : {array-like, sparse matrix}, shape (n_samples, n_features)
+        X : array-like, shape (n_samples, n_features)
             The training input samples.
-        y : None
-            There is no need of a target in a transformer, yet the pipeline API
-            requires this parameter.
+        y : array-like, shape (n_samples,)
+            The target values.
 
         Returns
         -------
         self : object
             Returns self.
         """
-        X = check_array(X, accept_sparse=True)
+        # Check that X and y have correct shape
+        # TODO call _validate_data instead
+        X, y = check_X_y(X, y)
 
-        self.n_features_ = X.shape[1]
+        self.X_ = X
+        self.y_ = y
 
-        # Return the transformer
+        # TODO implement 'fit' for DFORegressor
+
         return self
 
-    def transform(self, X):
-        """ A reference implementation of a transform function.
+    def predict(self, X):
+        """Implementation of a prediction for the discrete first-order regressor.
 
         Parameters
         ----------
-        X : {array-like, sparse-matrix}, shape (n_samples, n_features)
+        X : array-like, shape (n_samples, n_features)
             The input samples.
 
         Returns
         -------
-        X_transformed : array, shape (n_samples, n_features)
-            The array containing the element-wise square roots of the values
-            in ``X``.
+        y : ndarray, shape (n_samples,)
+            The output corresponding to each input sample
         """
         # Check is fit had been called
-        check_is_fitted(self, 'n_features_')
+        check_is_fitted(self, ['X_', 'y_'])
 
         # Input validation
-        X = check_array(X, accept_sparse=True)
+        X = check_array(X)
 
-        # Check that the input is of the same shape as the one passed
-        # during fit.
-        if X.shape[1] != self.n_features_:
-            raise ValueError('Shape of input is different from what was seen'
-                             'in `fit`')
-        return np.sqrt(X)
+        pass
