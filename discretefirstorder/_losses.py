@@ -11,7 +11,6 @@ class MSELoss:
 
     Examples
     --------
-    >>> from discretefirstorder._losses import MSELoss
     >>> import numpy as np
     >>> y = np.array([2, 0, -1, 10])
     >>> X = np.array([[1, 2], [-1, 0], [1, -1], [8, 3]])
@@ -20,7 +19,7 @@ class MSELoss:
     >>> loss.loss(coef, X, y)
     2.0
     >>> loss.gradient(coef, X, y)
-    array([11, 4])
+    array([11,  4])
     """
     def __init__(self):
         pass
