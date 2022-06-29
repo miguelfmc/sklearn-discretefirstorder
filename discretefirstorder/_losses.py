@@ -24,7 +24,8 @@ class MSELoss:
     def __init__(self):
         pass
 
-    def loss(self, coef, X, y):
+    @staticmethod
+    def loss(coef, X, y):
         """Calculate squared loss for a linear model
             given the coefficients, data and target.
 
@@ -44,7 +45,8 @@ class MSELoss:
         """
         return 0.5 * np.sum((y - X @ coef) ** 2)
 
-    def gradient(self, coef, X, y):
+    @staticmethod
+    def gradient(coef, X, y):
         """Calculate squared loss gradient for a linear model
             given the coefficients, data and target.
 
