@@ -292,6 +292,9 @@ class DFORegressor(RegressorMixin, BaseDFO):
         # rescale coefficients and set intercept
         self._set_intercept(X_offset, y_offset, X_scale)
 
+        # add fitted flag
+        self.is_fitted_ = True
+
         return self
 
     def predict(self, X):
