@@ -278,7 +278,7 @@ class DFORegressor(RegressorMixin, BaseDFO):
                                                    y=y,
                                                    learning_rate=self.learning_rate,
                                                    k=self.k,
-                                                   loss=self.loss,
+                                                   loss_type=self.loss,
                                                    polish=self.polish,
                                                    max_iter=self.max_iter,
                                                    tol=self.tol)
