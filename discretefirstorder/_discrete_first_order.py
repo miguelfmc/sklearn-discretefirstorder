@@ -145,23 +145,32 @@ class DFORegressor(RegressorMixin, BaseDFO):
 
     Parameters
     ----------
-    loss :
+    loss : str
+        type of loss to be minimized. One of 'mse' or 'mae'.
 
-    learning_rate :
+    learning_rate : str or float
+        learning rate to be used.
 
-    k :
+    k : int
+        number of non-zero features to keep.
 
-    polish :
+    polish : bool
+        whether to polish coefficients by running least squares on the active set.
 
-    n_runs :
+    n_runs : int
+        number of runs of the discrete first order optimization procedure.
 
-    max_iter :
+    max_iter : int
+        maximum number of steps to take during one run of the discrete first order optimization algorithm.
 
-    tol :
+    tol : float
+        tolerance below which the optimization algorithm stops.
 
-    fit_intercept :
+    fit_intercept : bool
+        whether to fit an intercept term
 
-    normalize :
+    normalize : bool
+        whether to normalize the input data.
 
     Attributes
     ----------
@@ -204,6 +213,17 @@ class DFORegressor(RegressorMixin, BaseDFO):
 
     def _set_intercept(self, X_offset, y_offset, X_scale):
         """Set intercept (adapted from sklearn LinearModel)
+
+        Parameters
+        ----------
+        X_offset : ndarray of shape (n_features,)
+            average (offset) value of each feature
+
+        y_offset : float
+            average (offset) target value
+
+        X_scale : ndarray of shape (n_features,)
+            scale of each feature
         """
         if self.fit_intercept:
             self.coef_ = np.divide(self.coef_, X_scale)
@@ -216,13 +236,12 @@ class DFORegressor(RegressorMixin, BaseDFO):
 
         Parameters
         ----------
-        X : array-like, shape (n_samples, n_features)
+        X : array-like of shape (n_samples, n_features)
             The training input samples.
-        y : array-like, shape (n_samples,)
+        y : array-like of shape (n_samples,)
             The target values.
-        coef_init : (optional) array-like, shape (n_features,)
+        coef_init : (optional) array-like of shape (n_features,)
             Initial value of regression coefficients
-
 
         Returns
         -------
@@ -253,7 +272,6 @@ class DFORegressor(RegressorMixin, BaseDFO):
         coef = coef_init
         coef_temp = coef_init
 
-        # TODO can we parallelize n_runs?
         for _ in range(self.n_runs):
             coef_temp, objective_temp = _solve_dfo(coef=coef_temp,
                                                    X=X,
@@ -271,7 +289,6 @@ class DFORegressor(RegressorMixin, BaseDFO):
         # coefficients for scaled features
         self.coef_ = coef
         # TODO consider using LinearModel's _set_intercept
-        # self.intercept_ = self.y_.mean() - self.coef_.T @ self.X_.mean(axis=0)
         # rescale coefficients and set intercept
         self._set_intercept(X_offset, y_offset, X_scale)
 
@@ -295,4 +312,5 @@ class DFORegressor(RegressorMixin, BaseDFO):
 
         # Input validation
         X = check_array(X)
-        pass
+
+        return X @ self.coef_
