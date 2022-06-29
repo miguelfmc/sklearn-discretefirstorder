@@ -3,6 +3,7 @@ Implementation of the discrete first-order method for subset selection
 """
 
 import numpy as np
+from scipy.linalg import lstsq
 from ._losses import MSELoss, LogLoss
 
 
@@ -11,17 +12,27 @@ LOSSES = {"mse": MSELoss,
 
 
 def _threshold(arr, k):
-    """Threshold array to keep top k largest elements
+    """Threshold array to keep top k largest elements (in absolute value)
 
     Parameters
     -----------
-    arr : array-like, input array
+    arr : array-like of shape (n_features,)
+        input array.
 
-    k : int, number of nonzero elements to keep
+    k : int
+        number of nonzero elements to keep.
 
     Returns
     -------
-    result : "thresholded" array
+    result : ndarray of shape (n_features,)
+        'thresholded' array
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> a = np.array([-10, 5, 1, 3, -4, 8, 2])
+    >>> _threshold(a, 3)
+    array([-10,  5,  0,  0,  0,  8,  0])
     """
     idx = np.argpartition(np.abs(arr), -k)[-k:]
     result = np.zeros_like(arr)
@@ -30,15 +41,17 @@ def _threshold(arr, k):
 
 
 def _calculate_learning_rate(X):
-    """Calculate learning rate based on design matrix X
+    """Calculate learning rate based on data X
 
     Parameters
     ----------
-    X : design matrix
+    X : ndarray of shape (n_samples, n_features)
+        training data.
 
     Returns
     -------
-    lr : float, learning rate based on Lipschitz constant
+    lr : float
+        learning rate based on Lipschitz constant.
     """
     L = np.real(np.max(np.linalg.eigvals(X.T @ X)))
     return 1 / L
@@ -49,30 +62,40 @@ def _solve_dfo(coef, X, y, learning_rate, k, loss_type, polish, max_iter, tol):
 
     Parameters
     ----------
-    coef :
+    coef : array-like of shape (n_features,)
+        coefficient vector.
 
-    X
+    X : ndarray of shape (n_samples, n_features)
+        training data.
 
-    y
+    y : array-like of shape (n_samples,)
+        target values.
 
-    learning_rate
+    learning_rate : float
+        learning rate.
 
-    k
+    k : int
+        number of non-zero coefficients to keep.
 
-    loss_type
+    loss_type : string
+        loss type (one of 'mse' or 'logloss')
 
-    polish
+    polish : bool
+        whether to polish coefficient vector by computing the least squares solution on active set
 
-    max_iter
+    max_iter : int
+        max number of iterations
 
-    tol
+    tol : float
+        tolerance.
 
     Returns
     -------
-    coef :
+    coef : ndarray of shape (n_features,)
+        coefficient vector.
 
-    loss_value :
-
+    loss_value : float
+        loss value.
     """
     # check learning rate type and assign value to lr
     if isinstance(learning_rate, str):
@@ -105,8 +128,14 @@ def _solve_dfo(coef, X, y, learning_rate, k, loss_type, polish, max_iter, tol):
             break
 
     # polish
+    # TODO test polishing
     if polish:
-        # TODO implement coefficient polishing
-        pass
+        active_idx = (np.abs(coef) > 0)
+        X_ = X[:, active_idx]
+
+        polished, _, _, _ = lstsq(X_, y)
+        coef[active_idx] = polished
+
+        loss_value = loss.loss(coef, X, y)
 
     return coef, loss_value
