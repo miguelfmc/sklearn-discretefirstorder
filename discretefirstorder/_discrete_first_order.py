@@ -193,7 +193,7 @@ class DFORegressor(RegressorMixin, BaseDFO):
     def __init__(self,
                  loss="mse",
                  learning_rate="auto",
-                 k=5,
+                 k=3,
                  polish=True,
                  n_runs=50,
                  max_iter=100,
