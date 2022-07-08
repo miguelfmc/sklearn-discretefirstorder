@@ -66,13 +66,3 @@ class MSELoss:
         """
         return -X.T @ (y - X @ coef)
 
-
-class LogLoss:
-    def __init__(self):
-        pass
-
-    def loss(self, coef, X, y):
-        pass
-
-    def gradient(self, coef, X, y):
-        pass
