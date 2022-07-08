@@ -3,33 +3,32 @@ Discrete First-Order Method for Classification and Regression
 """
 
 from abc import ABCMeta, abstractmethod
+
 import numpy as np
 from scipy.linalg import lstsq
-
-from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
-# is it OK to use internal function?
+from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.linear_model._base import _preprocess_data
-from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
-from sklearn.utils.multiclass import unique_labels
+from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
 
 from ._dfo_optim import _solve_dfo, _threshold
 
 
 # TODO consider inheriting from LinearModel
 class BaseDFO(BaseEstimator, metaclass=ABCMeta):
-    """Base class for Discrete First Order classification and regression.
-    """
+    """Base class for Discrete First Order classification and regression."""
 
-    def __init__(self,
-                 loss,
-                 learning_rate="auto",
-                 k=5,
-                 polish=True,
-                 n_runs=50,
-                 max_iter=100,
-                 tol=1e-3,
-                 fit_intercept=False,
-                 normalize=False):
+    def __init__(
+        self,
+        loss,
+        learning_rate="auto",
+        k=5,
+        polish=True,
+        n_runs=50,
+        max_iter=100,
+        tol=1e-3,
+        fit_intercept=False,
+        normalize=False,
+    ):
         super(BaseDFO, self).__init__()
         self.loss = loss
         self.learning_rate = learning_rate
@@ -43,8 +42,7 @@ class BaseDFO(BaseEstimator, metaclass=ABCMeta):
 
     @abstractmethod
     def fit(self, X, y):
-        """Fit model.
-        """
+        """Fit model."""
 
 
 class DFORegressor(RegressorMixin, BaseDFO):
@@ -62,13 +60,15 @@ class DFORegressor(RegressorMixin, BaseDFO):
         number of non-zero features to keep.
 
     polish : bool
-        whether to polish coefficients by running least squares on the active set.
+        whether to polish coefficients by running least
+        squares on the active set.
 
     n_runs : int
         number of runs of the discrete first order optimization procedure.
 
     max_iter : int
-        maximum number of steps to take during one run of the discrete first order optimization algorithm.
+        maximum number of steps to take during one run
+        of the discrete first order optimization algorithm.
 
     tol : float
         tolerance below which the optimization algorithm stops.
@@ -97,26 +97,30 @@ class DFORegressor(RegressorMixin, BaseDFO):
     DFORegressor()
     """
 
-    def __init__(self,
-                 loss="mse",
-                 learning_rate="auto",
-                 k=3,
-                 polish=True,
-                 n_runs=50,
-                 max_iter=100,
-                 tol=1e-3,
-                 fit_intercept=False,
-                 normalize=False):
+    def __init__(
+        self,
+        loss="mse",
+        learning_rate="auto",
+        k=3,
+        polish=True,
+        n_runs=50,
+        max_iter=100,
+        tol=1e-3,
+        fit_intercept=False,
+        normalize=False,
+    ):
         # TODO validate inputs e.g. learning rate and loss
-        super(DFORegressor, self).__init__(loss=loss,
-                                           learning_rate=learning_rate,
-                                           k=k,
-                                           polish=polish,
-                                           n_runs=n_runs,
-                                           max_iter=max_iter,
-                                           tol=tol,
-                                           fit_intercept=fit_intercept,
-                                           normalize=normalize)
+        super(DFORegressor, self).__init__(
+            loss=loss,
+            learning_rate=learning_rate,
+            k=k,
+            polish=polish,
+            n_runs=n_runs,
+            max_iter=max_iter,
+            tol=tol,
+            fit_intercept=fit_intercept,
+            normalize=normalize,
+        )
 
     def _set_intercept(self, X_offset, y_offset, X_scale):
         """Set intercept (adapted from sklearn LinearModel)
@@ -159,12 +163,13 @@ class DFORegressor(RegressorMixin, BaseDFO):
         # TODO call _validate_data instead
         X, y = check_X_y(X, y)
 
-        # preprocess data (center and scale) as in other linear models
-        # by default we expect fit_intercept = False and normalize = False, therefore no preprocessing
-        X, y, X_offset, y_offset, X_scale = _preprocess_data(X,
-                                                             y,
-                                                             self.fit_intercept,
-                                                             self.normalize)
+        # preprocess data (center and scale)
+        # this is like in other linear models
+        # by default we expect fit_intercept = False and normalize = False
+        # therefore no preprocessing
+        X, y, X_offset, y_offset, X_scale = _preprocess_data(
+            X, y, self.fit_intercept, self.normalize
+        )
 
         # init coefficients
         if coef_init is None:
@@ -180,15 +185,17 @@ class DFORegressor(RegressorMixin, BaseDFO):
         coef_temp = coef_init
 
         for _ in range(self.n_runs):
-            coef_temp, objective_temp = _solve_dfo(coef=coef_temp,
-                                                   X=X,
-                                                   y=y,
-                                                   learning_rate=self.learning_rate,
-                                                   k=self.k,
-                                                   loss_type=self.loss,
-                                                   polish=self.polish,
-                                                   max_iter=self.max_iter,
-                                                   tol=self.tol)
+            coef_temp, objective_temp = _solve_dfo(
+                coef=coef_temp,
+                X=X,
+                y=y,
+                learning_rate=self.learning_rate,
+                k=self.k,
+                loss_type=self.loss,
+                polish=self.polish,
+                max_iter=self.max_iter,
+                tol=self.tol,
+            )
             if objective_temp < objective:
                 coef = coef_temp
                 objective = objective_temp
@@ -218,7 +225,7 @@ class DFORegressor(RegressorMixin, BaseDFO):
             The output corresponding to each input sample
         """
         # Check is fit had been called
-        check_is_fitted(self, ['X_', 'y_'])
+        check_is_fitted(self, ["X_", "y_"])
 
         # Input validation
         X = check_array(X)
