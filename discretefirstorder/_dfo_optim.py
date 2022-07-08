@@ -4,11 +4,10 @@ Implementation of the discrete first-order method for subset selection
 
 import numpy as np
 from scipy.linalg import lstsq
-from ._losses import MSELoss, LogLoss
 
+from ._losses import MSELoss
 
-LOSSES = {"mse": MSELoss,
-          "logloss": LogLoss}
+LOSSES = {"mse": MSELoss}
 
 
 def _threshold(arr, k):
@@ -81,7 +80,8 @@ def _solve_dfo(coef, X, y, learning_rate, k, loss_type, polish, max_iter, tol):
         loss type (one of 'mse' or 'logloss')
 
     polish : bool
-        whether to polish coefficient vector by computing the least squares solution on active set
+        whether to polish coefficient vector by computing
+        the least squares solution on active set
 
     max_iter : int
         max number of iterations
@@ -102,8 +102,9 @@ def _solve_dfo(coef, X, y, learning_rate, k, loss_type, polish, max_iter, tol):
         if learning_rate == "auto":
             lr = _calculate_learning_rate(X)
         else:
-            raise NotImplementedError("No implemented logic for learning_rate:",
-                                      learning_rate)
+            raise NotImplementedError(
+                "No implemented logic for learning_rate:", learning_rate
+            )
 
     elif isinstance(learning_rate, float):
         lr = learning_rate
@@ -130,7 +131,7 @@ def _solve_dfo(coef, X, y, learning_rate, k, loss_type, polish, max_iter, tol):
     # polish
     # TODO test polishing
     if polish:
-        active_idx = (np.abs(coef) > 0)
+        active_idx = np.abs(coef) > 0
         X_ = X[:, active_idx]
 
         polished, _, _, _ = lstsq(X_, y)
