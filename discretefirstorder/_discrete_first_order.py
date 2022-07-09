@@ -10,7 +10,7 @@ from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.linear_model._base import _preprocess_data
 from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
 
-from ._dfo_optim import _solve_dfo, _threshold
+from ._dfo_optim import LOSSES, _solve_dfo, _threshold
 
 
 # TODO consider inheriting from LinearModel
@@ -21,7 +21,7 @@ class BaseDFO(BaseEstimator, metaclass=ABCMeta):
         self,
         loss,
         learning_rate="auto",
-        k=5,
+        k=1,
         polish=True,
         n_runs=50,
         max_iter=100,
@@ -39,6 +39,17 @@ class BaseDFO(BaseEstimator, metaclass=ABCMeta):
         self.tol = tol
         self.fit_intercept = fit_intercept
         self.normalize = normalize
+
+        # check loss
+        if loss not in LOSSES.keys():
+            raise NotImplementedError(f"Loss '{loss}' not implemented!")
+
+        # check learning rate
+        if isinstance(learning_rate, str):
+            if learning_rate != "auto":
+                raise ValueError(
+                    "If learning rate is a string it must be set to 'auto'."
+                )
 
     @abstractmethod
     def fit(self, X, y):
@@ -110,7 +121,6 @@ class DFORegressor(RegressorMixin, BaseDFO):
         fit_intercept=False,
         normalize=False,
     ):
-        # TODO validate inputs e.g. learning rate and loss and k
         super(DFORegressor, self).__init__(
             loss=loss,
             learning_rate=learning_rate,
@@ -149,20 +159,25 @@ class DFORegressor(RegressorMixin, BaseDFO):
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
-            The training input samples.
+            the training input samples.
         y : array-like of shape (n_samples,)
-            The target values.
+            the target values.
         coef_init : (optional) array-like of shape (n_features,)
-            Initial value of regression coefficients
+            initial value of regression coefficients
 
         Returns
         -------
         self : object
             Returns self.
         """
-        # Check that X and y have correct shape
-        # TODO call _validate_data instead
+        # check that X and y have correct shape
         X, y = check_X_y(X, y)
+
+        # other checks
+        if self.k > X.shape[1]:
+            raise ValueError(
+                f"Parameter k with value {self.k} is greater than input number of features."
+            )
 
         # preprocess data (center and scale)
         # this is like in other linear models
@@ -226,10 +241,10 @@ class DFORegressor(RegressorMixin, BaseDFO):
         y : ndarray, shape (n_samples,)
             The output corresponding to each input sample
         """
-        # Check is fit had been called
+        # check is fit had been called
         check_is_fitted(self, ["coef_", "intercept_"])
 
-        # Input validation
+        # input validation
         X = check_array(X)
 
         return X @ self.coef_ + self.intercept_
