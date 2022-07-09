@@ -8,7 +8,8 @@ import numpy as np
 from scipy.linalg import lstsq
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.linear_model._base import _preprocess_data
-from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
+from sklearn.utils.validation import (check_array, check_is_fitted,
+                                      check_random_state, check_X_y)
 
 from ._dfo_optim import LOSSES, _solve_dfo, _threshold
 
@@ -28,6 +29,7 @@ class BaseDFO(BaseEstimator, metaclass=ABCMeta):
         tol=1e-3,
         fit_intercept=False,
         normalize=False,
+        random_state=None,
     ):
         super(BaseDFO, self).__init__()
         self.loss = loss
@@ -39,6 +41,7 @@ class BaseDFO(BaseEstimator, metaclass=ABCMeta):
         self.tol = tol
         self.fit_intercept = fit_intercept
         self.normalize = normalize
+        self.random_state = random_state
 
         # check loss
         if loss not in LOSSES.keys():
@@ -120,6 +123,7 @@ class DFORegressor(RegressorMixin, BaseDFO):
         tol=1e-3,
         fit_intercept=False,
         normalize=False,
+        random_state=None,
     ):
         super(DFORegressor, self).__init__(
             loss=loss,
@@ -131,6 +135,7 @@ class DFORegressor(RegressorMixin, BaseDFO):
             tol=tol,
             fit_intercept=fit_intercept,
             normalize=normalize,
+            random_state=random_state,
         )
 
     def _set_intercept(self, X_offset, y_offset, X_scale):
@@ -153,6 +158,7 @@ class DFORegressor(RegressorMixin, BaseDFO):
         else:
             self.intercept_ = 0.0
 
+    # noinspection PyAttributeOutsideInit
     def fit(self, X, y, coef_init=None):
         """Implementation of the fit method for the discrete first-order regressor.
 
@@ -172,12 +178,15 @@ class DFORegressor(RegressorMixin, BaseDFO):
         """
         # check that X and y have correct shape
         X, y = check_X_y(X, y)
+        n_samples, n_features = X.shape
 
         # other checks
         if self.k > X.shape[1]:
             raise ValueError(
                 f"Parameter k with value {self.k} is greater than input number of features."
             )
+
+        self.random_state_ = check_random_state(self.random_state)
 
         # preprocess data (center and scale)
         # this is like in other linear models
@@ -198,12 +207,11 @@ class DFORegressor(RegressorMixin, BaseDFO):
         # optimize
         objective = float("inf")
         coef = coef_init
-        coef_temp = coef_init
+        coef_init_temp = coef_init
 
-        # TODO add n_iter_ attribute
         for _ in range(self.n_runs):
-            coef_temp, objective_temp = _solve_dfo(
-                coef=coef_temp,
+            coef_temp, objective_temp, n_iter_temp = _solve_dfo(
+                coef=coef_init_temp,
                 X=X,
                 y=y,
                 learning_rate=self.learning_rate,
@@ -216,12 +224,21 @@ class DFORegressor(RegressorMixin, BaseDFO):
             if objective_temp < objective:
                 coef = coef_temp
                 objective = objective_temp
+                n_iter = n_iter_temp
+
+            coef_init_temp = coef_init + (
+                2
+                * self.random_state_.rand(n_features)
+                * np.max(np.abs(coef_init))
+            )
 
         # coefficients for scaled features
         self.coef_ = coef
         # TODO consider using LinearModel's _set_intercept
         # rescale coefficients and set intercept
         self._set_intercept(X_offset, y_offset, X_scale)
+
+        self.n_iter_ = n_iter
 
         # add fitted flag
         self.is_fitted_ = True
