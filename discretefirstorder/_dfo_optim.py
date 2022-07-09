@@ -106,6 +106,9 @@ def _solve_dfo(coef, X, y, learning_rate, k, loss_type, polish, max_iter, tol):
 
     loss_value : float
         loss value.
+
+    n_iter : int
+        number of iterations that were run
     """
     # check learning rate type and assign value to lr
     if isinstance(learning_rate, str):
@@ -149,4 +152,4 @@ def _solve_dfo(coef, X, y, learning_rate, k, loss_type, polish, max_iter, tol):
 
         loss_value = loss.loss(coef, X, y)
 
-    return coef, loss_value
+    return coef, loss_value, n_iter
