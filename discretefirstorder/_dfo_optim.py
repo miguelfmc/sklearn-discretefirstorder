@@ -2,6 +2,8 @@
 Implementation of the discrete first-order method for subset selection
 """
 
+import warnings
+
 import numpy as np
 from scipy.linalg import lstsq
 
@@ -33,6 +35,14 @@ def _threshold(arr, k):
     >>> _threshold(a, 3)
     array([-10,  5,  0,  0,  0,  8,  0])
     """
+    if k > len(arr):
+        warnings.warn(
+            f"Parameter k with value {k} is greater than "
+            f"input array length. "
+            f"Returning original input.",
+            UserWarning,
+        )
+        return arr
     idx = np.argpartition(np.abs(arr), -k)[-k:]
     result = np.zeros_like(arr)
     result[idx] = arr[idx]
