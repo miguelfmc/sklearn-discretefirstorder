@@ -81,10 +81,11 @@ class DFORegressor(RegressorMixin, BaseDFO):
 
     Attributes
     ----------
-    X_ : ndarray, shape (n_samples, n_features)
-        The input passed during :meth:`fit`.
-    y_ : ndarray, shape (n_samples,)
-        The labels passed during :meth:`fit`.
+    coef_ : ndarray, shape (n_features,)
+        coefficient vector.
+
+    intercept_ : float
+        intercept.
 
     Examples
     --------
@@ -101,7 +102,7 @@ class DFORegressor(RegressorMixin, BaseDFO):
         self,
         loss="mse",
         learning_rate="auto",
-        k=3,
+        k=1,
         polish=True,
         n_runs=50,
         max_iter=100,
@@ -109,7 +110,7 @@ class DFORegressor(RegressorMixin, BaseDFO):
         fit_intercept=False,
         normalize=False,
     ):
-        # TODO validate inputs e.g. learning rate and loss
+        # TODO validate inputs e.g. learning rate and loss and k
         super(DFORegressor, self).__init__(
             loss=loss,
             learning_rate=learning_rate,
@@ -184,6 +185,7 @@ class DFORegressor(RegressorMixin, BaseDFO):
         coef = coef_init
         coef_temp = coef_init
 
+        # TODO add n_iter_ attribute
         for _ in range(self.n_runs):
             coef_temp, objective_temp = _solve_dfo(
                 coef=coef_temp,
@@ -225,9 +227,9 @@ class DFORegressor(RegressorMixin, BaseDFO):
             The output corresponding to each input sample
         """
         # Check is fit had been called
-        check_is_fitted(self, ["X_", "y_"])
+        check_is_fitted(self, ["coef_", "intercept_"])
 
         # Input validation
         X = check_array(X)
 
-        return X @ self.coef_
+        return X @ self.coef_ + self.intercept_
