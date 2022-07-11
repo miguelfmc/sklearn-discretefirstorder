@@ -8,8 +8,12 @@ import numpy as np
 from scipy.linalg import lstsq
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.linear_model._base import _preprocess_data
-from sklearn.utils.validation import (check_array, check_is_fitted,
-                                      check_random_state, check_X_y)
+from sklearn.utils.validation import (
+    check_array,
+    check_is_fitted,
+    check_random_state,
+    check_X_y,
+)
 
 from ._dfo_optim import LOSSES, _solve_dfo, _threshold
 
@@ -208,6 +212,7 @@ class DFORegressor(RegressorMixin, BaseDFO):
         objective = float("inf")
         coef = coef_init
         coef_init_temp = coef_init
+        n_iter = None
 
         for _ in range(self.n_runs):
             coef_temp, objective_temp, n_iter_temp = _solve_dfo(
