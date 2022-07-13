@@ -125,8 +125,8 @@ class DFORegressor(RegressorMixin, BaseDFO):
         n_runs=50,
         max_iter=100,
         tol=1e-3,
-        fit_intercept=False,
-        normalize=False,
+        fit_intercept=True,
+        normalize=True,
         random_state=None,
     ):
         super(DFORegressor, self).__init__(
