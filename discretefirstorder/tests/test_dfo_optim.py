@@ -53,3 +53,22 @@ def test_not_implemented_learning_rate():
             tol=1e-3,
         )
         _solve_dfo(**params)
+
+
+def test_invalid_type_learning_rate():
+    """Test invalid type learning rate in _solve_dfo"""
+    import numpy as np
+
+    with pytest.raises(TypeError):
+        params = dict(
+            coef=np.array([1, 1]),
+            X=np.array([[1, 2], [-1, 0], [1, -1], [8, 3]]),
+            y=np.array([1, 1]),
+            learning_rate=True,  # invalid type
+            k=1,
+            loss_type="mse",
+            polish=True,
+            max_iter=10,
+            tol=1e-3,
+        )
+        _solve_dfo(**params)
