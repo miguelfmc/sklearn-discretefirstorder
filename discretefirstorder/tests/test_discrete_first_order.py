@@ -56,3 +56,15 @@ def test_dfo_regressor_fit(data):
     reg = DFORegressor()
     reg.fit(*data)
     assert hasattr(reg, "is_fitted_")
+
+
+def test_invalid_loss():
+    """Test invalid loss"""
+    with pytest.raises(NotImplementedError):
+        _ = DFORegressor(loss="myloss")
+
+
+def test_invalid_value_learning_rate():
+    """Test invalid string value for learning rate"""
+    with pytest.raises(ValueError):
+        _ = DFORegressor(learning_rate="myrate")
