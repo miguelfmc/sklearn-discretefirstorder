@@ -4,7 +4,7 @@ Test DFO algorithm and functions
 
 import pytest
 
-from discretefirstorder._dfo_optim import _threshold
+from discretefirstorder._dfo_optim import _threshold, _solve_dfo
 
 
 def test_threshold():
@@ -34,3 +34,22 @@ def test_calculate_learning_rate():
 def test_solve_dfo():
     """Test _solve_dfo"""
     pass
+
+
+def test_not_implemented_learning_rate():
+    """Test not implemented learning rate in _solve_dfo"""
+    import numpy as np
+
+    with pytest.raises(NotImplementedError):
+        params = dict(
+            coef=np.array([1, 1]),
+            X=np.array([[1, 2], [-1, 0], [1, -1], [8, 3]]),
+            y=np.array([1, 1]),
+            learning_rate="optimal",  # not implemented,
+            k=1,
+            loss_type="mse",
+            polish=True,
+            max_iter=10,
+            tol=1e-3,
+        )
+        _solve_dfo(**params)
