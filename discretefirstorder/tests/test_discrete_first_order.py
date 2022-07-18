@@ -19,7 +19,7 @@ def test_dfo_regressor(data):
     reg = DFORegressor()
     assert reg.loss == "mse"
     assert reg.learning_rate == "auto"
-    assert reg.k == 3
+    assert reg.k == 1
     assert reg.polish is True
     assert reg.n_runs == 50
     assert reg.max_iter == 100
