@@ -33,7 +33,7 @@ def _threshold(arr, k):
     >>> import numpy as np
     >>> a = np.array([-10, 5, 1, 3, -4, 8, 2])
     >>> _threshold(a, 3)
-    array([-10,  5,  0,  0,  0,  8,  0])
+    array([-10,   5,   0,   0,   0,   8,   0])
     """
     if k > len(arr):
         warnings.warn(
