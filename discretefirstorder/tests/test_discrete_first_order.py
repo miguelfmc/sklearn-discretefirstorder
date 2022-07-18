@@ -14,8 +14,8 @@ def data():
     return load_iris(return_X_y=True)
 
 
-def test_dfo_regressor(data):
-    """Test DFORegressor"""
+def test_dfo_regressor_default():
+    """Test DFORegressor default params"""
     reg = DFORegressor()
     assert reg.loss == "mse"
     assert reg.learning_rate == "auto"
@@ -27,5 +27,9 @@ def test_dfo_regressor(data):
     assert reg.fit_intercept is False
     assert reg.normalize is False
 
+
+def test_dfo_regressor_fit(data):
+    """Test DFORegressor fit method"""
+    reg = DFORegressor()
     reg.fit(*data)
     assert hasattr(reg, "is_fitted_")
