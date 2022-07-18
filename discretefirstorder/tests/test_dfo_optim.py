@@ -45,7 +45,7 @@ def test_not_implemented_learning_rate():
             coef=np.array([1, 1]),
             X=np.array([[1, 2], [-1, 0], [1, -1], [8, 3]]),
             y=np.array([1, 1]),
-            learning_rate="optimal",  # not implemented,
+            learning_rate="myrate",  # not implemented,
             k=1,
             loss_type="mse",
             polish=True,
