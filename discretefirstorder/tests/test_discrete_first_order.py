@@ -68,3 +68,10 @@ def test_invalid_value_learning_rate():
     """Test invalid string value for learning rate"""
     with pytest.raises(ValueError):
         _ = DFORegressor(learning_rate="myrate")
+
+
+def test_invalid_k(data):
+    """Test invalid k given data"""
+    with pytest.raises(ValueError):
+        reg = DFORegressor(k=10)  # n_features = 4
+        reg.fit(*data)
