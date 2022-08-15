@@ -7,15 +7,107 @@ from abc import ABCMeta, abstractmethod
 import numpy as np
 from scipy.linalg import lstsq
 from sklearn.base import BaseEstimator, RegressorMixin
-from sklearn.linear_model._base import _preprocess_data
 from sklearn.utils.validation import (
     check_array,
     check_is_fitted,
     check_random_state,
     check_X_y,
+    FLOAT_DTYPES,
 )
 
 from ._dfo_optim import LOSSES, _solve_dfo, _threshold
+
+
+def _preprocess_data(X, y, fit_intercept, normalize=True, copy=True):
+    """Center and scale input data
+
+    X = (X - X_mean) / X_std
+    y = y - y_mean
+
+    Simpler version of sklearn's linear model's preprocessing
+    function.
+
+    NOTE: no support for sparse inputs or multi-output
+
+    Parameters
+    ----------
+    X : ndarray of shape (n_samples, n_features)
+        input features
+    y : ndarray of shape (n_samples,)
+        targets
+
+    fit_intercept : bool
+        whether an intercept term will be fitted
+
+    normalize : bool
+        whether the data should also be scaled
+
+    Returns
+    -------
+    X : ndarray of shape (n_samples, n_features)
+        centered and scaled features
+
+    y : ndarray of shape (n_samples,)
+        centered targets
+
+    X_offset : ndarray of shape (n_features,)
+        means of features
+
+    y_offset : float
+        target mean
+
+    X_scale : ndarray of shape (n_features,)
+        standard deviations of features
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> X = np.array([[2, 0.5, 120], [0, -0.3, 200], [7, 0.1, 40]])
+    >>> y = np.array([10, 12, -2])
+    >>> X, y, X_offset, y_offset, X_scale = _preprocess_data(X, y, fit_intercept=True, normalize=True)
+    >>> X
+    array([[-3.39683110e-01,  1.22474487e+00,  0.00000000e+00],
+           [-1.01904933e+00, -1.22474487e+00,  1.22474487e+00],
+           [ 1.35873244e+00, -4.24918736e-17, -1.22474487e+00]])
+    >>> X_offset
+    array([3.0e+00, 1.0e-01, 1.2e+02])
+    """
+    # check shapes
+    if y.ndim > 1:
+        raise ValueError("No support for multidimensional outputs")
+
+    # check arrays
+    X = check_array(X, dtype=FLOAT_DTYPES)
+    if copy:
+        X = X.copy(order="K")
+        y = y.copy(order="K")
+
+    # targets to have same type as inputs
+    y = np.asarray(y, dtype=X.dtype)
+
+    # center and scale
+    if fit_intercept:
+        X_offset = X.mean(axis=0, dtype=X.dtype)
+        y_offset = y.mean(axis=0, dtype=y.dtype)
+        if normalize:
+            X_scale = X.std(axis=0, dtype=X.dtype)
+            # deal with constant features
+            constant_features_idx = X_scale == 0.0
+            X_scale[constant_features_idx] = 1.0
+
+            X -= X_offset
+            X /= X_scale
+        else:
+            X_scale = np.ones(X.shape[1], dtype=X.dtype)
+            X -= X_offset
+
+        y -= y_offset
+    else:
+        X_offset = np.zeros(X.shape[1], dtype=X.dtype)
+        y_offset = y.dtype.type(0)
+        X_scale = np.ones(X.shape[1], dtype=X.dtype)
+
+    return X, y, X_offset, y_offset, X_scale
 
 
 # TODO consider inheriting from LinearModel
