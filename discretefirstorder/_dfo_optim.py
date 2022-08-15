@@ -66,7 +66,18 @@ def _calculate_learning_rate(X):
     return 1 / L
 
 
-def _solve_dfo(coef, X, y, learning_rate, k, loss_type, polish, max_iter, tol):
+def _solve_dfo(
+    coef,
+    X,
+    y,
+    learning_rate,
+    k,
+    loss_type,
+    polish,
+    max_iter,
+    tol,
+    return_iterates=False,
+):
     """Discrete first-order optimization routine.
 
     Parameters
@@ -109,6 +120,9 @@ def _solve_dfo(coef, X, y, learning_rate, k, loss_type, polish, max_iter, tol):
 
     n_iter : int
         number of iterations that were run
+
+    iterates : dict of lists
+        dictionary with the sequence of loss values and estimated parameter vectos
     """
     # check learning rate type and assign value to lr
     if isinstance(learning_rate, str):
@@ -127,8 +141,10 @@ def _solve_dfo(coef, X, y, learning_rate, k, loss_type, polish, max_iter, tol):
     # get loss from type
     loss = LOSSES[loss_type]
 
-    # initialize stuff
+    # initialize
     loss_value = loss.loss(coef, X, y)
+    losses = [loss_value]
+    coefs = [coef]
 
     # algorithm loop
     for n_iter in range(max_iter):
@@ -138,6 +154,10 @@ def _solve_dfo(coef, X, y, learning_rate, k, loss_type, polish, max_iter, tol):
         coef = _threshold(coef, k)
 
         loss_value = loss.loss(coef, X, y)
+
+        losses.append(loss_value)
+        coefs.append(coef)
+
         if (prev_loss_value - loss_value) < tol:
             break
 
@@ -151,5 +171,11 @@ def _solve_dfo(coef, X, y, learning_rate, k, loss_type, polish, max_iter, tol):
         coef[active_idx] = polished
 
         loss_value = loss.loss(coef, X, y)
+
+    # return sequence of losses and coefficients if needed
+    # TODO test return iterates
+    if return_iterates:
+        iterates = {"losses": losses, "coefs": coefs}
+        return coef, loss_value, n_iter, iterates
 
     return coef, loss_value, n_iter
