@@ -3,15 +3,21 @@ Test estimators
 """
 
 import pytest
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_iris, load_diabetes
 
 from discretefirstorder import DFORegressor
 
 
 @pytest.fixture
-def data():
+def iris_data():
     """Load Iris dataset for testing"""
     return load_iris(return_X_y=True)
+
+
+@pytest.fixture
+def diabetes_data():
+    """Load diabetes dataset for testing"""
+    return load_diabetes(return_X_y=True)
 
 
 def test_dfo_regressor_default():
@@ -51,10 +57,10 @@ def test_dfo_regressor():
     assert reg.normalize is False
 
 
-def test_dfo_regressor_fit(data):
+def test_dfo_regressor_fit(iris_data):
     """Test DFORegressor fit method"""
     reg = DFORegressor()
-    reg.fit(*data)
+    reg.fit(*iris_data)
     assert hasattr(reg, "is_fitted_")
 
 
@@ -70,8 +76,8 @@ def test_invalid_value_learning_rate():
         _ = DFORegressor(learning_rate="myrate")
 
 
-def test_invalid_k(data):
+def test_invalid_k(iris_data):
     """Test invalid k given data"""
     with pytest.raises(ValueError):
         reg = DFORegressor(k=10)  # n_features = 4
-        reg.fit(*data)
+        reg.fit(*iris_data)
