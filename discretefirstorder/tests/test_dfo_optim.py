@@ -26,11 +26,13 @@ def test_threshold_warning():
         _ = _threshold(arr, k)
 
 
+# TODO implement test_calculate_learning_rate
 def test_calculate_learning_rate():
     """Test _calculate_learning_rate"""
     pass
 
 
+# TODO implement test_solve_dfo
 def test_solve_dfo():
     """Test _solve_dfo"""
     pass
