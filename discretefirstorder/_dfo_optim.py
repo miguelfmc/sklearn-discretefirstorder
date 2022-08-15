@@ -62,7 +62,7 @@ def _calculate_learning_rate(X):
     lr : float
         learning rate based on Lipschitz constant.
     """
-    L = np.real(np.max(np.linalg.eigvals(X.T @ X)))
+    L = np.real(np.max(np.linalg.eigvalsh(X.T @ X)))
     return 1 / L
 
 
@@ -122,7 +122,7 @@ def _solve_dfo(
         number of iterations that were run
 
     iterates : dict of lists
-        dictionary with the sequence of loss values and estimated parameter vectos
+        dictionary with the sequence of loss values and estimated parameter vectors
     """
     # check learning rate type and assign value to lr
     if isinstance(learning_rate, str):
