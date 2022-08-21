@@ -202,10 +202,9 @@ class DFORegressor(RegressorMixin, BaseDFO):
 
         # init coefficients
         if coef_init is None:
-            if X.shape[0] > X.shape[1]:
-                coef_init, _, _, _ = lstsq(X, y)
-            else:
-                coef_init = X.T @ y
+            # regardless of X.shape[1] we rely on scipy's routine
+            # for undetermined cases, it will use the pseudo inverse of X.T X
+            coef_init, _, _, _ = lstsq(X, y)
             coef_init = _threshold(coef_init, self.k)
 
         # optimize
