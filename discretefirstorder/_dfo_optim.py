@@ -49,9 +49,11 @@ def _threshold(arr, k):
     return result
 
 
-# TODO add doctest
 def _calculate_learning_rate(X):
-    """Calculate learning rate based on data X
+    """Calculate learning rate based on data X.
+
+    Learning rate will be the inverse of the Lipschitz constant L,
+    which is calculated as the (real part of the) maximum eigenvalue of X.T @ X.
 
     Parameters
     ----------
@@ -62,6 +64,13 @@ def _calculate_learning_rate(X):
     -------
     lr : float
         learning rate based on Lipschitz constant.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> X = np.diag([1, 2, 4])
+    >>> _calculate_learning_rate(X)
+    0.0625
     """
     L = np.real(np.max(np.linalg.eigvalsh(X.T @ X)))
     return 1 / L
