@@ -54,7 +54,7 @@ dfo_score = dfo.score(X_test, y_test)
 dfo_coef_error = np.sqrt(np.sum((dfo.coef_ - coef) ** 2))
 
 print(f"DFO R² score on test set: {dfo_score:.4f}")
-print(f"DFO R² score on test set: {dfo_score:.4f}")
+print(f"DFO coef error: {dfo_coef_error:.4f}")
 
 # %%
 # Fit a DFORegressor in a Pipeline with StandardScaler
