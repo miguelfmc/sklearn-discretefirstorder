@@ -4,7 +4,11 @@ Test DFO algorithm and functions
 
 import pytest
 
-from discretefirstorder._dfo_optim import _threshold, _solve_dfo
+from discretefirstorder._dfo_optim import (
+    _threshold,
+    _solve_dfo,
+    _calculate_learning_rate,
+)
 
 
 def test_threshold():
@@ -26,10 +30,12 @@ def test_threshold_warning():
         _ = _threshold(arr, k)
 
 
-# TODO implement test_calculate_learning_rate
 def test_calculate_learning_rate():
     """Test _calculate_learning_rate"""
-    pass
+    import numpy as np
+
+    X = np.diag([1, 2, 4])
+    assert _calculate_learning_rate(X) == 0.0625
 
 
 # TODO implement test_solve_dfo
