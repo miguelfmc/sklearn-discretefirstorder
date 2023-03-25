@@ -73,10 +73,11 @@ For more examples, see the documentation_.
 Known Issues
 ------------
 This package is still at a very early stage of development. The following issues are known:
-- Optimization routines are implemented in Python, which makes them slow.
-- At the moment, the package only supports squared error loss minimization but there are plans to include support for absolute error loss minimization.
-- At the moment, there is no support for classification problems i.e. logistic regression.
-- I'm working on making the package available on PyPI and conda-forge.
+
+* Optimization routines are implemented in Python, which makes them slow.
+* At the moment, the package only supports squared error loss minimization but there are plans to include support for absolute error loss minimization.
+* At the moment, there is no support for classification problems i.e. logistic regression.
+* I'm working on making the package available on PyPI and conda-forge.
 
 Contributing
 ------------
