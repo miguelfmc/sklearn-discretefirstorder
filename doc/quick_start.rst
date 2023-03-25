@@ -8,9 +8,11 @@ Installation
 Install the package from PyPI
 -----------------------------
 
-You can easily pip install sklearn-discretefirstorder::
+At the moment, the package is not available on PyPI.
 
-    $ pip install sklearn-discretefirstorder
+.. You can easily pip install sklearn-discretefirstorder::
+
+..     $ pip install sklearn-discretefirstorder
 
 Install from source
 -------------------
