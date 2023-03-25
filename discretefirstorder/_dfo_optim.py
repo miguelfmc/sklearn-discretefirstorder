@@ -7,9 +7,9 @@ import warnings
 import numpy as np
 from scipy.linalg import lstsq
 
-from ._losses import MSELoss, BinaryCrossEntropyLoss
+from ._losses import MSELoss
 
-LOSSES = {"mse": MSELoss, "bce": BinaryCrossEntropyLoss}
+LOSSES = {"mse": MSELoss}
 
 
 def _threshold(arr, k):
