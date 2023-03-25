@@ -2,5 +2,16 @@
 sklearn-discretefirstorder API
 #############################
 
-This is an example on how to document the API of your own project.
+This is the API guide for the discrete first-order estimators 
+implemented in the ``discretefirstorder`` package.
 
+.. currentmodule:: discretefirstorder
+
+Discrete First-Order Regressor
+==============================
+
+.. autosummary::
+   :toctree: generated/
+   :template: class.rst
+
+   DiscreteFirstOrderRegressor
