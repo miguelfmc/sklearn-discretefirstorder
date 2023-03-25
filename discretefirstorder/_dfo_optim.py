@@ -7,9 +7,9 @@ import warnings
 import numpy as np
 from scipy.linalg import lstsq
 
-from ._losses import MSELoss
+from ._losses import MSELoss, BinaryCrossEntropyLoss
 
-LOSSES = {"mse": MSELoss}
+LOSSES = {"mse": MSELoss, "bce": BinaryCrossEntropyLoss}
 
 
 def _threshold(arr, k):
@@ -49,6 +49,7 @@ def _threshold(arr, k):
     return result
 
 
+# TODO add doctest
 def _calculate_learning_rate(X):
     """Calculate learning rate based on data X
 
@@ -147,6 +148,7 @@ def _solve_dfo(
     coefs = [coef]
 
     # algorithm loop
+    # TODO implement loop in cython
     for n_iter in range(max_iter):
         prev_loss_value = loss_value
 
@@ -173,7 +175,6 @@ def _solve_dfo(
         loss_value = loss.loss(coef, X, y)
 
     # return sequence of losses and coefficients if needed
-    # TODO test return iterates
     if return_iterates:
         iterates = {"losses": losses, "coefs": coefs}
         return coef, loss_value, n_iter, iterates
