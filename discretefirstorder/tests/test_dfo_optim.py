@@ -38,12 +38,6 @@ def test_calculate_learning_rate():
     assert _calculate_learning_rate(X) == 0.0625
 
 
-# TODO implement test_solve_dfo
-def test_solve_dfo():
-    """Test _solve_dfo"""
-    pass
-
-
 def test_not_implemented_learning_rate():
     """Test not implemented learning rate in _solve_dfo"""
     import numpy as np
