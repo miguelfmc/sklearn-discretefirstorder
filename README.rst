@@ -52,7 +52,7 @@ To install the package, clone this repo and run ``pip install``::
 Quick Start
 -----------
 
-Once you have installed the package you can start using it as follows.
+Once you have installed the package you can start using it as follows:
 
 The key estimator in this packages is the ``discretefirstorder.DFORegressor``.
 You can import it as::
@@ -77,11 +77,28 @@ This package is still at a very early stage of development. The following issues
 * Optimization routines are implemented in Python, which makes them slow.
 * At the moment, the package only supports squared error loss minimization but there are plans to include support for absolute error loss minimization.
 * At the moment, there is no support for classification problems i.e. logistic regression.
-* I'm working on making the package available on PyPI and conda-forge.
+* I'm working on making the package available on PyPI and conda-forge. Stay tuned for updates!
 
 Contributing
 ------------
 While the project is still in its early stages, contributions are welcome!
+
+To contribute, please fork the repo and clone it to your local machine. Then, create a new branch and make your changes.
+
+I suggest you set-up your local environment with conda and pip::
+   
+      conda create -n sklearn-discretefirstorder python=3.8
+      conda activate sklearn-discretefirstorder
+      pip install -r requirements.txt -r requirements-dev.txt -r requirements-docs.txt -r requirements-test.txt
+
+You can also use conda to install all the dependencies from the ``environment.yml`` file::
+
+      conda env create -f environment.yml
+      conda activate sklearn-discretefirstorder
+   
+Then, install the package in editable mode::
+   
+      pip install -e .
 
 License
 -------
