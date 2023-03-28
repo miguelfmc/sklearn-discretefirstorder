@@ -69,5 +69,4 @@ target/
 .idea/*
 
 # Notebooks
-*.ipynb
 examples/*.ipynb
