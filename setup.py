@@ -34,10 +34,10 @@ CLASSIFIERS = [
     "Operating System :: POSIX",
     "Operating System :: Unix",
     "Operating System :: MacOS",
-    "Programming Language :: Python :: 2.7",
     "Programming Language :: Python :: 3.5",
     "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
 ]
 EXTRAS_REQUIRE = {
     "tests": ["pytest", "pytest-cov"],
@@ -47,6 +47,7 @@ EXTRAS_REQUIRE = {
         "sphinx_rtd_theme",
         "numpydoc",
         "matplotlib",
+        "pillow",
     ],
 }
 
@@ -65,4 +66,5 @@ setup(
     packages=find_packages(),
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
+    python_requires=">=3.5",
 )
