@@ -1,15 +1,14 @@
-import pytest
+"""
+Test common
+"""
 
+import pytest
 from sklearn.utils.estimator_checks import check_estimator
 
-from discretefirstorder import TemplateEstimator
-from discretefirstorder import TemplateClassifier
-from discretefirstorder import TemplateTransformer
+from discretefirstorder import DFORegressor
 
 
-@pytest.mark.parametrize(
-    "estimator",
-    [TemplateEstimator(), TemplateTransformer(), TemplateClassifier()]
-)
+@pytest.mark.parametrize("estimator", [DFORegressor()])
 def test_all_estimators(estimator):
+    """Standard scikit-learn estimator checks"""
     return check_estimator(estimator)

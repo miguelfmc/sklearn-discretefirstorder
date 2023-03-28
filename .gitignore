@@ -67,3 +67,7 @@ target/
 
 # PyCharm
 .idea/*
+
+# Notebooks
+*.ipynb
+examples/*.ipynb
