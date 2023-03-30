@@ -43,11 +43,15 @@ If time permits, I plan to add more features and improve the documentation.
 Installation
 ------------
 
-To install the package, clone this repo and run ``pip install``::
+To install the package from source, clone this repo and run ``pip install``::
    
    git clone https://github.com/miguelfmc/sklearn-discretefirstorder
    cd sklearn-discretefirstorder
    pip install .
+   
+The package is also available for installation from PyPI!::
+   
+   pip install sklearn-discretefirstorder
 
 Quick Start
 -----------
@@ -77,7 +81,7 @@ This package is still at a very early stage of development. The following issues
 * Optimization routines are implemented in Python, which makes them slow.
 * At the moment, the package only supports squared error loss minimization but there are plans to include support for absolute error loss minimization.
 * At the moment, there is no support for classification problems i.e. logistic regression.
-* I'm working on making the package available on PyPI and conda-forge. Stay tuned for updates!
+* I'm working on making the package available on conda-forge. Stay tuned for updates!
 
 Contributing
 ------------
