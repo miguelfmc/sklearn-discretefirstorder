@@ -68,9 +68,9 @@ target/
 # PyCharm
 .idea/*
 
+# VS Code
+.vscode/*
+
 # Notebooks
 examples/*.ipynb
 examples/.ipynb_checkpoints/*
-
-# VS Code stuff
-.vscode/*
