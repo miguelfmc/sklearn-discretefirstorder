@@ -72,5 +72,5 @@ target/
 examples/*.ipynb
 examples/.ipynb_checkpoints/*
 
-# VS Code
+# VS Code stuff
 .vscode/*
