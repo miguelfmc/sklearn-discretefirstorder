@@ -71,3 +71,6 @@ target/
 # Notebooks
 examples/*.ipynb
 examples/.ipynb_checkpoints/*
+
+# VS Code
+.vscode/*
