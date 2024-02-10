@@ -91,7 +91,7 @@ To contribute, please fork the repo and clone it to your local machine. Then, cr
 
 I suggest you set-up your local environment with conda and pip::
    
-      conda create -n sklearn-discretefirstorder python=3.8
+      conda create -n sklearn-discretefirstorder python=3.10
       conda activate sklearn-discretefirstorder
       pip install -r requirements.txt -r requirements-dev.txt -r requirements-docs.txt -r requirements-test.txt
 
