@@ -196,6 +196,7 @@ class DFORegressor(RegressorMixin, BaseDFO):
         # this is like in other linear models
         # by default we expect fit_intercept = False and normalize = False
         # therefore no preprocessing
+        # TODO fix normalization in _preprocess_data call
         X, y, X_offset, y_offset, X_scale = _preprocess_data(
             X, y, self.fit_intercept, self.normalize
         )
